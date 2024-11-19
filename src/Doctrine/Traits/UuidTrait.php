@@ -10,7 +10,7 @@ trait UuidTrait
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private ?string $uuid = null;
+    private ?Uuid $uuid = null;
 
     public function defineUuid(): void
     {
