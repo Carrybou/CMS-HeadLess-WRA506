@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Post;
+use App\ApiResource\CreateUser;
+use App\ApiResource\CreateUserProcessor;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,10 +13,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use App\Doctrine\Traits\UuidTrait;
 
 use App\Doctrine\Traits\TimestampableTrait;
+use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
+#[ApiResource] # cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
+#[Post(input: CreateUser::class, processor: CreateUserProcessor::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
    use UuidTrait, TimestampableTrait;
@@ -28,6 +35,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Ignore]
     public ?string $password = null;
 
     #[Assert\Email]
