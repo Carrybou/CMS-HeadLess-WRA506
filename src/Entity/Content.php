@@ -2,6 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\ApiResource\ContentProcessor;
 use App\Doctrine\Traits\UuidTrait;
 use App\Repository\ContentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,104 +22,55 @@ use App\Doctrine\Traits\TimestampableTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
+#[Get(uriVariables: ['slug'])]
+#[GetCollection]
+#[Put(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
+#[Delete(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])] # < cette ligne permet de filtrer les données par titre dans l'API
+#[Post(uriVariables: ['slug'], security: 'is_granted("ROLE_USER")', processor: ContentProcessor::class)] # cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: ContentRepository::class)]
 class Content
 {
     use UuidTrait, TimestampableTrait;
 
+
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 255)]
-    private ?string $Title = null;
+    public ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
-    private ?string $img = null;
+    public ?string $img = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $meta = null;
+    public ?string $meta = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $content = null;
+    #[Assert\NotBlank]
+    public ?string $content = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $slug = null;
+    #[ORM\Column(length: 255, unique: true)]
+    public ?string $slug = null;
 
     /**
      * @var Collection<int, Tags>
      */
+    #[ApiProperty(readableLink: true)]
     #[ORM\ManyToMany(targetEntity: Tags::class)]
     #[ORM\JoinTable(name: 'content_tags', joinColumns: [new ORM\JoinColumn(name: 'content_uuid', referencedColumnName: 'uuid')], inverseJoinColumns: [new ORM\JoinColumn(name: 'tag_uuid', referencedColumnName: 'uuid')])]
-    private Collection $tags;
+    public Collection $tags;
+
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid')]
-    private ?User $Author = null;
+    #[ApiProperty(identifier: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid', onDelete: 'CASCADE')]
+    public ?User $author = null;
 
     public function __construct()
     {
         $this->tags = new ArrayCollection();
-    }
-
-
-    public function getTitle(): ?string
-    {
-        return $this->Title;
-    }
-
-    public function setTitle(string $Title): static
-    {
-        $this->Title = $Title;
-
-        return $this;
-    }
-
-    public function getImg(): ?string
-    {
-        return $this->img;
-    }
-
-    public function setImg(?string $img): static
-    {
-        $this->img = $img;
-
-        return $this;
-    }
-
-    public function getMeta(): ?string
-    {
-        return $this->meta;
-    }
-
-    public function setMeta(?string $meta): static
-    {
-        $this->meta = $meta;
-
-        return $this;
-    }
-
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
-
-    public function setContent(string $content): static
-    {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): static
-    {
-        $this->slug = $slug;
-
-        return $this;
+        $this->defineUuid();
     }
 
     /**
@@ -136,39 +97,4 @@ class Content
         return $this;
     }
 
-    public function getAuthor(): ?User
-    {
-        return $this->Author;
-    }
-
-    public function setAuthor(?User $Author): static
-    {
-        $this->Author = $Author;
-
-        return $this;
-    }
-
-    public function getDcrt(): ?\DateTimeInterface
-    {
-        return $this->Dcrt;
-    }
-
-    public function setDcrt(\DateTimeInterface $Dcrt): static
-    {
-        $this->Dcrt = $Dcrt;
-
-        return $this;
-    }
-
-    public function getDmod(): ?\DateTimeInterface
-    {
-        return $this->Dmod;
-    }
-
-    public function setDmod(?\DateTimeInterface $Dmod): static
-    {
-        $this->Dmod = $Dmod;
-
-        return $this;
-    }
 }

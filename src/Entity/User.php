@@ -2,10 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\ApiResource\CreateUser;
 use App\ApiResource\CreateUserProcessor;
 use App\Repository\UserRepository;
+use App\Validator\UnregistredEmail;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -15,12 +22,19 @@ use App\Doctrine\Traits\UuidTrait;
 use App\Doctrine\Traits\TimestampableTrait;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ApiResource] # cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
+#[Get]
+#[GetCollection]
+#[Put(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
+#[Delete(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Post(input: CreateUser::class, processor: CreateUserProcessor::class)]
+#[ApiFilter(SearchFilter::class, properties: ['email' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
    use UuidTrait, TimestampableTrait;
@@ -36,9 +50,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Ignore]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 6)]
     public ?string $password = null;
 
     #[Assert\Email]
+    #[UnregistredEmail]
     #[ORM\Column(length: 255)]
     public ?string $email = null;
 
