@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -18,6 +20,7 @@ use App\Doctrine\Traits\TimestampableTrait;
 #[GetCollection]
 #[Put(security: 'is_granted("ROLE_ADMIN")')]
 #[Delete(security: 'is_granted("ROLE_ADMIN")')]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
 #[ORM\Entity(repositoryClass: TagsRepository::class)]
 class Tags
 {

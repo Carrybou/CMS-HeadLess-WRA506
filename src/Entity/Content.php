@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -24,6 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[GetCollection]
 #[Put(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Delete(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])] # < cette ligne permet de filtrer les données par titre dans l'API
 #[Post(uriVariables: ['slug'], security: 'is_granted("ROLE_USER")', processor: ContentProcessor::class)] # cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: ContentRepository::class)]
 class Content

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -32,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Put(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Delete(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Post(input: CreateUser::class, processor: CreateUserProcessor::class)]
+#[ApiFilter(SearchFilter::class, properties: ['email' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
    use UuidTrait, TimestampableTrait;

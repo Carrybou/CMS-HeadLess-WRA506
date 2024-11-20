@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -23,6 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Post( security: 'is_granted("ROLE_USER")',processor: CommentProcessor::class)] # cette annotation nous transforme en API
 #[Put(security: 'is_granted("ROLE_ADMIN") and object.author == user', denormalizationContext: ['groups' => ['comment:update']])]
 #[Delete(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
+#[ApiFilter(SearchFilter::class, properties: ['txt' => 'partial'])]
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
