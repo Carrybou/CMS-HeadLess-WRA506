@@ -1,9 +1,13 @@
 <?php
 
 namespace App\ApiResource;
+    use App\Validator\UnregistredEmail;
+
 
 class CreateUser
 {
-    public ?string $email = null;
-    public ?string $password = null;
+        #[UnregistredEmail]
+        public ?string $email = null;
+
+        public ?string $password = null;
 }

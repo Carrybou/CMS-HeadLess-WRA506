@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\ApiResource\ContentProcessor;
 use App\Doctrine\Traits\UuidTrait;
 use App\Repository\ContentRepository;
@@ -20,6 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[Get(uriVariables: ['slug'])]
 #[GetCollection]
+#[Put]
+#[Delete]
 #[Post(uriVariables: ['slug'], security: 'is_granted("ROLE_USER")', processor: ContentProcessor::class)] # cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: ContentRepository::class)]
 class Content
@@ -40,6 +44,7 @@ class Content
     public ?string $meta = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     public ?string $content = null;
 
     #[ORM\Column(length: 255, unique: true)]
@@ -53,17 +58,10 @@ class Content
     #[ORM\JoinTable(name: 'content_tags', joinColumns: [new ORM\JoinColumn(name: 'content_uuid', referencedColumnName: 'uuid')], inverseJoinColumns: [new ORM\JoinColumn(name: 'tag_uuid', referencedColumnName: 'uuid')])]
     public Collection $tags;
 
-    /**
-     * @var Collection<int, Comment>
-     */
-    #[ApiProperty(readableLink: true)]
-    #[ORM\OneToMany(targetEntity: Comment::class)]
-    #[ORM\JoinTable(name: 'content_comments', joinColumns: [new ORM\JoinColumn(name: 'content_uuid', referencedColumnName: 'uuid')], inverseJoinColumns: [new ORM\JoinColumn(name: 'comment_uuid', referencedColumnName: 'uuid')])]
-    public Collection $comments;
 
     #[ORM\ManyToOne]
     #[ApiProperty(identifier: false)]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid')]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid', onDelete: 'CASCADE')]
     public ?User $author = null;
 
     public function __construct()
