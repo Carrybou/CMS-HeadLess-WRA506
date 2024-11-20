@@ -22,8 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[Get(uriVariables: ['slug'])]
 #[GetCollection]
-#[Put]
-#[Delete]
+#[Put(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
+#[Delete(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Post(uriVariables: ['slug'], security: 'is_granted("ROLE_USER")', processor: ContentProcessor::class)] # cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: ContentRepository::class)]
 class Content

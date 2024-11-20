@@ -21,8 +21,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Get]
 #[GetCollection]
 #[Post( security: 'is_granted("ROLE_USER")',processor: CommentProcessor::class)] # cette annotation nous transforme en API
-#[Put(denormalizationContext: ['groups' => ['comment:update']])]
-#[Delete]
+#[Put(security: 'is_granted("ROLE_ADMIN") and object.author == user', denormalizationContext: ['groups' => ['comment:update']])]
+#[Delete(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
