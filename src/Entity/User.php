@@ -29,8 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
 #[Get]
 #[GetCollection]
-#[Put]
-#[Delete]
+#[Put(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
+#[Delete(security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Post(input: CreateUser::class, processor: CreateUserProcessor::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

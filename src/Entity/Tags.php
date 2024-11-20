@@ -13,11 +13,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Doctrine\Traits\UuidTrait;
 use App\Doctrine\Traits\TimestampableTrait;
-#[Post(security: 'is_granted("ROLE_USER")')] # cette annotation nous transforme en API
+#[Post(security: 'is_granted("ROLE_ADMIN")')] # cette annotation nous transforme en API
 #[Get]
 #[GetCollection]
-#[Put]
-#[Delete]
+#[Put(security: 'is_granted("ROLE_ADMIN")')]
+#[Delete(security: 'is_granted("ROLE_ADMIN")')]
 #[ORM\Entity(repositoryClass: TagsRepository::class)]
 class Tags
 {

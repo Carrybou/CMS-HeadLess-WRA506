@@ -15,7 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
     name: 'user:create',
-    description: 'Add a short description for your command',
+    description: 'Add a user to the bdd',
 )]
 class UserCreateCommand extends Command
 {
