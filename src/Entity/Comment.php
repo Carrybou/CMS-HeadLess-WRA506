@@ -2,70 +2,48 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\ApiResource\CommentProcessor;
+use App\ApiResource\ContentProcessor;
 use App\Repository\CommentRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Doctrine\Traits\UuidTrait;
 use App\Doctrine\Traits\TimestampableTrait;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+#[Get]
+#[GetCollection]
+#[Post( security: 'is_granted("ROLE_USER")',processor: CommentProcessor::class)] # cette annotation nous transforme en API
+#[Put(denormalizationContext: ['groups' => ['comment:update']])]
+#[Delete]
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
     use UuidTrait, TimestampableTrait;
     #[ORM\Column(length: 255)]
-    private ?string $txt = null;
+    #[Groups(['comment:update'])]
+    public ?string $txt = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid')]
-    private ?User $author = null;
+    #[ApiProperty(identifier: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid', onDelete: 'CASCADE')]
+    public ?User $author = null;
 
 
-
-    public function getTxt(): ?string
+    #[ApiProperty(readableLink: true)]
+    #[ORM\ManytoOne(targetEntity: Content::class)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid', onDelete: 'CASCADE')]
+    public ?Content $content;
+    public function __construct()
     {
-        return $this->txt;
+        $this->defineUuid();
     }
 
-    public function setTxt(string $txt): static
-    {
-        $this->txt = $txt;
-
-        return $this;
-    }
-
-    public function getAuthor(): ?User
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(?User $author): static
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    public function getDcrt(): ?\DateTimeInterface
-    {
-        return $this->Dcrt;
-    }
-
-    public function setDcrt(\DateTimeInterface $Dcrt): static
-    {
-        $this->Dcrt = $Dcrt;
-
-        return $this;
-    }
-
-    public function getDmod(): ?\DateTimeInterface
-    {
-        return $this->Dmod;
-    }
-
-    public function setDmod(?\DateTimeInterface $Dmod): static
-    {
-        $this->Dmod = $Dmod;
-
-        return $this;
-    }
 }
