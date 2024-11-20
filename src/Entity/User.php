@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\CreateUser;
 use App\ApiResource\CreateUserProcessor;
@@ -20,6 +22,8 @@ use Symfony\Component\Serializer\Attribute\Ignore;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
+#[Get]
+#[GetCollection]
 #[Post(input: CreateUser::class, processor: CreateUserProcessor::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

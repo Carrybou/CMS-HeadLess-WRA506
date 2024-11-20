@@ -2,70 +2,32 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\ApiResource\ContentProcessor;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Doctrine\Traits\UuidTrait;
 use App\Doctrine\Traits\TimestampableTrait;
-
+#[Get]
+#[GetCollection]
+#[Post( security: 'is_granted("ROLE_USER")')] # cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
     use UuidTrait, TimestampableTrait;
     #[ORM\Column(length: 255)]
-    private ?string $txt = null;
+    public ?string $txt = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid')]
-    private ?User $author = null;
+    public ?User $author = null;
 
-
-
-    public function getTxt(): ?string
+    public function __construct()
     {
-        return $this->txt;
+        $this->defineUuid();
     }
 
-    public function setTxt(string $txt): static
-    {
-        $this->txt = $txt;
-
-        return $this;
-    }
-
-    public function getAuthor(): ?User
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(?User $author): static
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    public function getDcrt(): ?\DateTimeInterface
-    {
-        return $this->Dcrt;
-    }
-
-    public function setDcrt(\DateTimeInterface $Dcrt): static
-    {
-        $this->Dcrt = $Dcrt;
-
-        return $this;
-    }
-
-    public function getDmod(): ?\DateTimeInterface
-    {
-        return $this->Dmod;
-    }
-
-    public function setDmod(?\DateTimeInterface $Dmod): static
-    {
-        $this->Dmod = $Dmod;
-
-        return $this;
-    }
 }
