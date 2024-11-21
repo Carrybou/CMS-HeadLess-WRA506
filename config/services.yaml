@@ -25,3 +25,4 @@ services:
     App\Service\FileUploader:
         arguments:
             $uploadDir: '%kernel.project_dir%/public/medias'
+    App\Service\CsvImporter: ~

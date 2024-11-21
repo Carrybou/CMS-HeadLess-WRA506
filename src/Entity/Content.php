@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\ApiResource\ContentProcessor;
+use App\ApiResource\Filter\UuidFilter;
 use App\Doctrine\Traits\UuidTrait;
 use App\Repository\ContentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[GetCollection]
 #[Put(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Delete(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])] # < cette ligne permet de filtrer les données par titre dans l'API
+#[ApiFilter(UuidFilter::class, properties: ['title' => 'partial'])] # < cette ligne permet de filtrer les données par titre dans l'API
 #[Post(uriVariables: ['slug'], security: 'is_granted("ROLE_USER")', processor: ContentProcessor::class)] # cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: ContentRepository::class)]
 class Content
@@ -44,9 +45,12 @@ class Content
     public ?string $img = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    public ?string $meta = null;
+    public ?string $meta_title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
+    public ?string $meta_description = null;
+
+    #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
     public ?string $content = null;
 
@@ -65,7 +69,7 @@ class Content
 
     #[ORM\ManyToOne]
     #[ApiProperty(identifier: false)]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid', onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(referencedColumnName: 'uuid', nullable: false, onDelete: 'CASCADE')]
     public ?User $author = null;
 
     public function __construct()
@@ -74,13 +78,6 @@ class Content
         $this->defineUuid();
     }
 
-    /**
-     * @return Collection<int, Tags>
-     */
-    public function getTags(): Collection
-    {
-        return $this->tags;
-    }
 
     public function addTag(Tags $tag): static
     {
