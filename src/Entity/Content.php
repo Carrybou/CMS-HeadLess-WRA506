@@ -51,6 +51,7 @@ class Content
     public ?string $content = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank]
     public ?string $slug = null;
 
     /**
