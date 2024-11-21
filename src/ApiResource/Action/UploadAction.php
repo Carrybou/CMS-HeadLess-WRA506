@@ -5,7 +5,6 @@ namespace App\ApiResource\Action;
 use App\Entity\Upload;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -28,9 +27,11 @@ class UploadAction
         }
 
         $filename = $this->fileUploader->upload($file);
+        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
         $upload = new Upload();
         $upload->path = "/medias/{$filename}";
+        $upload->title = $originalFilename;
 
         $this->entityManager->persist($upload);
         $this->entityManager->flush();

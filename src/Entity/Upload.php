@@ -11,6 +11,8 @@ use App\ApiResource\Action\UploadAction;
 use App\Doctrine\Traits\TimestampableTrait;
 use App\Doctrine\Traits\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity]
 #[Get]
@@ -23,7 +25,12 @@ class Upload
     use UuidTrait, TimestampableTrait;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     public ?string $path = null;
+
+    #[ORM\Column]
+    #[Assert\NotBlank]
+    public ?string $title = null;
 
     public function __construct()
     {
