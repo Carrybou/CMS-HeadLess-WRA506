@@ -5,16 +5,16 @@ namespace App\ApiResource;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Content;
+use App\Service\SlugService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ContentProcessor implements ProcessorInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private SluggerInterface $slugger,
         private Security $security,
+        private SlugService $slugService,
     ) {
     }
 
@@ -25,29 +25,16 @@ class ContentProcessor implements ProcessorInterface
         array $context = []
     ): Content
     {
-
         if ($data instanceof Content) {
-            $slug = $this->slugger->slug($data->title)->lower();
-            $uniqueSlug = $this->ensureUniqueSlug($slug);
-            $data->slug=$uniqueSlug;
-
+            $data->slug = $this->slugService->generateUniqueSlug($data->title);
             $data->author = $this->security->getUser();
 
             $this->entityManager->persist($data);
             $this->entityManager->flush();
         }
-        return $data;
-
-    }
-
-    private function ensureUniqueSlug(string $slug): string
-    {
-        $repository = $this->entityManager->getRepository(Content::class);
-        $i = 1;
-        $uniqueSlug = $slug;
-        while ($repository->findOneBy(['slug' => $uniqueSlug])) {
-            $uniqueSlug = $slug . '-' . $i++;
+        else{
+            dd( "Data is not an instance of Content",$data);
         }
-        return $uniqueSlug;
+        return $data;
     }
 }
