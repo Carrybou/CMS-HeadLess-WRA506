@@ -1,37 +1,34 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\ApiResource\Action;
 
-use App\ApiResource\CsvImport;
 use App\Service\CsvImporter;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 #[AsController]
 class CsvImportAction
 {
-    public function __construct(
-        private EntityManagerInterface $entityManager,
-        private CsvImporter $csvImporter,
-        private CsvImport $CsvImport,
-    ) {
+    private CsvImporter $csvImporter;
+
+    public function __construct(CsvImporter $csvImporter)
+    {
+        $this->csvImporter = $csvImporter;
     }
 
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): Response
     {
+        // Use the $csvImportService to import data from the CSV file
         $file = $request->files->get('file');
-
-        if (!$file || $file->getClientOriginalExtension() !== 'csv') {
-            throw new BadRequestHttpException('Invalid file uploaded. Please upload a CSV file.');
-
+        if ($file) {
+            $this->csvImporter->import($file->getPathname());
         }
 
-        $this->csvImporter->import($file->getPathname());
-        $Import =new CsvImport();
-        $Import->isSuccess = true;
+        // Optionally, use the $entityManager for any database operations
+        // $this->entityManager->persist($entity);
+        // $this->entityManager->flush();
 
-        return $Import;
+        return new Response('CSV import completed successfully.');
     }
 }

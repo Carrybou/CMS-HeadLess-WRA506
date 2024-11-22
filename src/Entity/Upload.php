@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -13,7 +13,6 @@ use App\Doctrine\Traits\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 #[ORM\Entity]
 #[Get]
 #[GetCollection]
@@ -22,7 +21,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Post(controller: UploadAction::class, deserialize: false)]
 class Upload
 {
-    use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
 
     #[ORM\Column]
     #[Assert\NotBlank]

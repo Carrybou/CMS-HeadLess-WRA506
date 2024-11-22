@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Service;
 
@@ -16,7 +16,8 @@ class SlugService
 
     public function generateUniqueSlug(string $title): string
     {
-        $slug = $this->slugger->slug($title)->lower();
+        $slug = $this->slugger->slug($title)->lower()->toString();
+
         return $this->ensureUniqueSlug($slug);
     }
 
@@ -28,6 +29,7 @@ class SlugService
         while ($repository->findOneBy(['slug' => $uniqueSlug])) {
             $uniqueSlug = $slug . '-' . $i++;
         }
+
         return $uniqueSlug;
     }
 }

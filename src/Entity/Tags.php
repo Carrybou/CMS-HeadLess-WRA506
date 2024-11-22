@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -9,13 +9,12 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Repository\TagsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use App\Doctrine\Traits\UuidTrait;
 use App\Doctrine\Traits\TimestampableTrait;
-#[Post(security: 'is_granted("ROLE_ADMIN")')] # cette annotation nous transforme en API
+use App\Doctrine\Traits\UuidTrait;
+use App\Repository\TagsRepository;
+use Doctrine\ORM\Mapping as ORM;
+
+#[Post(security: 'is_granted("ROLE_ADMIN")')] // cette annotation nous transforme en API
 #[Get]
 #[GetCollection]
 #[Put(security: 'is_granted("ROLE_ADMIN")')]
@@ -24,12 +23,14 @@ use App\Doctrine\Traits\TimestampableTrait;
 #[ORM\Entity(repositoryClass: TagsRepository::class)]
 class Tags
 {
-    use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
     #[ORM\Column(length: 255)]
     public ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     public ?string $color = null;
+
     public function __construct()
     {
         $this->defineUuid();

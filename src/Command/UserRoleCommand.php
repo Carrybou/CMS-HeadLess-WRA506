@@ -1,7 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,8 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use function in_array;
 
 /*
  * To add roles to a user:
@@ -26,8 +27,7 @@ class UserRoleCommand extends Command
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -50,6 +50,7 @@ class UserRoleCommand extends Command
 
         if (!$user) {
             $io->error("User with email {$email} not found.");
+
             return Command::FAILURE;
         }
 
@@ -67,10 +68,11 @@ class UserRoleCommand extends Command
             $currentRoles = array_diff($currentRoles, $rolesToRemove);
         }
 
-        $user->setRoles($currentRoles);
+        $user->setRoles(array_values($currentRoles));
         $this->entityManager->flush();
 
         $io->success("Roles updated successfully for user {$email}. Current roles: " . implode(', ', $currentRoles));
+
         return Command::SUCCESS;
     }
 }

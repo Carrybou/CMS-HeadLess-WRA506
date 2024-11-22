@@ -4,7 +4,6 @@ namespace App\ApiResource;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\ApiResource\CreateUser;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -29,10 +28,8 @@ final readonly class CreateUserProcessor implements ProcessorInterface
         // Vous pouvez reprendre la logique de votre commande pour
         // créer votre user (avec un mot de passe hashé)
 
-
         $email = $data->email;
         $password = $data->password;
-
 
         $user = new User();
         $user->email = $email;
@@ -42,9 +39,6 @@ final readonly class CreateUserProcessor implements ProcessorInterface
 
         return $user;
 
-
-
         // votre logique
-
     }
 }
