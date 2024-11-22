@@ -39,6 +39,7 @@ class UserRoleCommand extends Command
             ->addOption('remove', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Roles to remove');
     }
 
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -68,7 +69,7 @@ class UserRoleCommand extends Command
             $currentRoles = array_diff($currentRoles, $rolesToRemove);
         }
 
-        $user->setRoles($currentRoles);
+        $user->setRoles(array_values($currentRoles));
         $this->entityManager->flush();
 
         $io->success("Roles updated successfully for user {$email}. Current roles: " . implode(', ', $currentRoles));

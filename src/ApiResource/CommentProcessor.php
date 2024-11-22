@@ -5,8 +5,11 @@ namespace App\ApiResource;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Comment;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
+
 
 class CommentProcessor implements ProcessorInterface
 {
@@ -23,8 +26,10 @@ class CommentProcessor implements ProcessorInterface
         array $context = [],
     ): Comment {
         if ($data instanceof Comment) {
-            $data->author = $this->security->getUser();
-
+            $user = $this->security->getUser();
+            if ($user instanceof User) {
+                $data->author = $user;
+            }
             $this->entityManager->persist($data);
             $this->entityManager->flush();
         }

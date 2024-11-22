@@ -15,7 +15,7 @@ class CsvImport
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private ?int $id = 1;
+    private int $id = 1;
 
     public function getId(): ?int
     {

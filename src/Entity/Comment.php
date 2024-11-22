@@ -38,7 +38,7 @@ class Comment
     public ?User $author = null;
 
     #[ApiProperty(readableLink: true)]
-    #[ORM\ManytoOne(targetEntity: Content::class)]
+    #[ORM\ManyToOne(targetEntity: Content::class)]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'uuid', onDelete: 'CASCADE')]
     public ?Content $content;
 

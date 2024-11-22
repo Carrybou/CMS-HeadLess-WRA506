@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
-use App\ApiResource\ContentProcessor;
 use App\Entity\Content;
 use App\Entity\Tags;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -16,7 +16,6 @@ class CsvImporter
     public function __construct(
         private EntityManagerInterface $entityManager,
         private FileUploader $fileUploader,
-        private ContentProcessor $contentProcessor,
         private SlugService $slugService,
         private Security $security,
     ) {
@@ -46,10 +45,17 @@ class CsvImporter
         fclose($handle);
     }
 
+    /**
+     * @param string[] $data
+     * @return void
+     */
     private function processRow(array $data): void
     {
         $content = new Content();
-        $content->author = $this->security->getUser();
+        $user = $this->security->getUser();
+        if ($user instanceof User) {
+            $content->author = $user;
+        }
         $content->title = $data['title'] ?? null;
         $content->img = $this->downloadImage($data['cover']);
         $content->meta_title = $data['meta_title'] ?? null;

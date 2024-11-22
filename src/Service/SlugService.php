@@ -16,7 +16,7 @@ class SlugService
 
     public function generateUniqueSlug(string $title): string
     {
-        $slug = $this->slugger->slug($title)->lower();
+        $slug = $this->slugger->slug($title)->lower()->toString();
 
         return $this->ensureUniqueSlug($slug);
     }
