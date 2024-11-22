@@ -8,8 +8,6 @@ use App\Entity\Comment;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Request;
-
 
 class CommentProcessor implements ProcessorInterface
 {

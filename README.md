@@ -123,6 +123,24 @@ To use the API, you can send HTTP requests to the endpoints defined in the API d
     ```sh
     DELETE /api/contents/{uuid}
     ```
+## Unit Tests
+- To run the unit tests, use the following command:
+    ```sh
+    php bin/phpunit
+    ```
+    This command will execute all the unit tests in the tests directory and provide a summary of the results.
+## Static Analysis
+- To perform static analysis on the codebase using PHPStan, use the following command:
+    ```sh
+    php vendor/bin/phpstan analyse -c phpstan.neon
+    ```
+    This command will analyze the codebase and provide information about potential issues and errors.
+## Code Style Fixer
+- To automatically fix code style issues using PHP CS Fixer, use the following command:
+    ```sh
+    php ./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix  --allow-risky=yes  --using-cache=no  --diff  --config=./tools/php-cs-fixer/.php-cs-fixer.php src/
+    ```
+    This command will automatically fix code style issues in the codebase according to the rules defined in the `.php_cs.dist` file.
 
 ## Contributing
 
@@ -131,3 +149,7 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
+Have fun
+
+Thomas GUIBERT

@@ -15,6 +15,7 @@ final readonly class Tokens
         private string $secret,
     ) {
     }
+
     /**
      * @throws RuntimeException
      */
@@ -25,16 +26,17 @@ final readonly class Tokens
             'expire' => $expire->getTimestamp(),
         ]);
 
-        if ($encoded === false) {
+        if (false === $encoded) {
             throw new RuntimeException('Failed to encode token data.');
         }
         $token = json_encode([
             $encoded,
             $this->sign($encoded),
         ]);
-        if ($token === false) {
+        if (false === $token) {
             throw new RuntimeException('Failed to encode token.');
         }
+
         return base64_encode($token);
     }
 

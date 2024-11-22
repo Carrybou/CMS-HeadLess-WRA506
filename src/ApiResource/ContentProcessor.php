@@ -9,8 +9,6 @@ use App\Entity\User;
 use App\Service\SlugService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Request;
-
 
 class ContentProcessor implements ProcessorInterface
 {

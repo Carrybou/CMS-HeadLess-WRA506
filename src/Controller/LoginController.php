@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Service\Tokens;
-use Psr\Log\LoggerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,9 +14,7 @@ class LoginController extends AbstractController
 {
     public function __construct(
         private Tokens $tokens,
-
-)
-    {
+    ) {
     }
 
     #[Route('/api/login', name: 'api_login', methods: ['POST', 'GET'])]
@@ -27,8 +25,7 @@ class LoginController extends AbstractController
         }
         try {
             $token = $this->tokens->generateTokenForUser($user->getEmail());
-        } catch (\Exception $e) {
-
+        } catch (Exception $e) {
             return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

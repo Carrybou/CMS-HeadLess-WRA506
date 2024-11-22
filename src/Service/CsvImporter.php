@@ -47,7 +47,6 @@ class CsvImporter
 
     /**
      * @param string[] $data
-     * @return void
      */
     private function processRow(array $data): void
     {
