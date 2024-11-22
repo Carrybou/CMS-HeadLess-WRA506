@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -11,21 +12,17 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\ApiResource\CreateUser;
 use App\ApiResource\CreateUserProcessor;
+use App\Doctrine\Traits\TimestampableTrait;
+use App\Doctrine\Traits\UuidTrait;
 use App\Repository\UserRepository;
 use App\Validator\UnregistredEmail;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Doctrine\Traits\UuidTrait;
-
-use App\Doctrine\Traits\TimestampableTrait;
-use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
-#[ApiResource] # cette annotation nous transforme en API
+#[ApiResource] // cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
@@ -37,13 +34,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(SearchFilter::class, properties: ['email' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-   use UuidTrait, TimestampableTrait;
+    use UuidTrait;
+    use TimestampableTrait;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    private array $roles = [];
+    public array $roles = [];
 
     /**
      * @var string The hashed password
@@ -71,7 +69,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -85,7 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return array_values(array_unique($roles));
     }
 
     /**
@@ -133,8 +131,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-
-
-
 }
