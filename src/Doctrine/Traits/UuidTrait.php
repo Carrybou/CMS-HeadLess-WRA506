@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace App\Doctrine\Traits;
 
-use ApiPlatform\Metadata\ApiProperty;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 trait UuidTrait
 {
@@ -17,5 +17,4 @@ trait UuidTrait
     {
         $this->uuid ??= Uuid::v4();
     }
-
 }

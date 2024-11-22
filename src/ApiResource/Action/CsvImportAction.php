@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\ApiResource\Action;
 
@@ -23,13 +23,12 @@ class CsvImportAction
     {
         $file = $request->files->get('file');
 
-        if (!$file || $file->getClientOriginalExtension() !== 'csv') {
+        if (!$file || 'csv' !== $file->getClientOriginalExtension()) {
             throw new BadRequestHttpException('Invalid file uploaded. Please upload a CSV file.');
-
         }
 
         $this->csvImporter->import($file->getPathname());
-        $Import =new CsvImport();
+        $Import = new CsvImport();
         $Import->isSuccess = true;
 
         return $Import;

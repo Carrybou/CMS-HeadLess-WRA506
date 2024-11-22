@@ -1,7 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\ApiResource;
-use ApiPlatform\Metadata\Get;
+
 use ApiPlatform\Metadata\Post;
 
 #[Post(uriTemplate: '/api/login', routeName: 'api_security_login', output: Token::class)]

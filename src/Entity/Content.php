@@ -1,11 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -13,27 +11,25 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\ApiResource\ContentProcessor;
 use App\ApiResource\Filter\UuidFilter;
+use App\Doctrine\Traits\TimestampableTrait;
 use App\Doctrine\Traits\UuidTrait;
 use App\Repository\ContentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Doctrine\Traits\TimestampableTrait;
 use Symfony\Component\Validator\Constraints as Assert;
-
 
 #[Get(uriVariables: ['slug'])]
 #[GetCollection]
 #[Put(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
 #[Delete(uriVariables: ['slug'], security: 'is_granted("ROLE_ADMIN") and object.author == user')]
-#[ApiFilter(UuidFilter::class, properties: ['title' => 'partial'])] # < cette ligne permet de filtrer les données par titre dans l'API
-#[Post(uriVariables: ['slug'], security: 'is_granted("ROLE_USER")', processor: ContentProcessor::class)] # cette annotation nous transforme en API
+#[ApiFilter(UuidFilter::class, properties: ['title' => 'partial'])] // < cette ligne permet de filtrer les données par titre dans l'API
+#[Post(uriVariables: ['slug'], security: 'is_granted("ROLE_USER")', processor: ContentProcessor::class)] // cette annotation nous transforme en API
 #[ORM\Entity(repositoryClass: ContentRepository::class)]
 class Content
 {
-    use UuidTrait, TimestampableTrait;
-
+    use UuidTrait;
+    use TimestampableTrait;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -66,7 +62,6 @@ class Content
     #[ORM\JoinTable(name: 'content_tags', joinColumns: [new ORM\JoinColumn(name: 'content_uuid', referencedColumnName: 'uuid')], inverseJoinColumns: [new ORM\JoinColumn(name: 'tag_uuid', referencedColumnName: 'uuid')])]
     public Collection $tags;
 
-
     #[ORM\ManyToOne]
     #[ApiProperty(identifier: false)]
     #[ORM\JoinColumn(referencedColumnName: 'uuid', nullable: false, onDelete: 'CASCADE')]
@@ -77,7 +72,6 @@ class Content
         $this->tags = new ArrayCollection();
         $this->defineUuid();
     }
-
 
     public function addTag(Tags $tag): static
     {
@@ -94,5 +88,4 @@ class Content
 
         return $this;
     }
-
 }

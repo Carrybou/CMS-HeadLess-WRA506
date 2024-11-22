@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -11,7 +11,9 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class LoginController extends AbstractController
 {
-    public function __construct(private Tokens $tokens) {}
+    public function __construct(private Tokens $tokens)
+    {
+    }
 
     #[Route('/api/login', name: 'api_login', methods: ['POST', 'GET'])]
     public function index(#[CurrentUser] ?User $user): Response

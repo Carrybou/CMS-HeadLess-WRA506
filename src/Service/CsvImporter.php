@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Service;
 
@@ -7,9 +7,9 @@ use App\Entity\Content;
 use App\Entity\Tags;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use function sprintf;
 
 class CsvImporter
 {
@@ -19,7 +19,6 @@ class CsvImporter
         private ContentProcessor $contentProcessor,
         private SlugService $slugService,
         private Security $security,
-
     ) {
     }
 
@@ -30,12 +29,12 @@ class CsvImporter
         }
 
         $handle = fopen($filePath, 'r');
-        if ($handle === false) {
+        if (false === $handle) {
             throw new BadRequestHttpException('Failed to open CSV file.');
         }
 
         $header = fgetcsv($handle, 1000, ',');
-        if ($header === false) {
+        if (false === $header) {
             throw new BadRequestHttpException('Invalid CSV file format.');
         }
 
@@ -77,7 +76,7 @@ class CsvImporter
     private function downloadImage(string $url): string
     {
         $imageContent = file_get_contents($url);
-        if ($imageContent === false) {
+        if (false === $imageContent) {
             throw new BadRequestHttpException('Failed to download image.');
         }
 
@@ -85,11 +84,12 @@ class CsvImporter
         file_put_contents($tempFile, $imageContent);
 
         $uploadedFile = new UploadedFile($tempFile, basename($url), null, null, true);
+
         return $this->fileUploader->upload($uploadedFile);
     }
 
     private function generateRandomColor(): string
     {
-        return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+        return sprintf('#%06X', random_int(0, 0xFFFFFF));
     }
 }

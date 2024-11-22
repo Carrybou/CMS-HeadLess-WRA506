@@ -1,14 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use function in_array;
+use const PATHINFO_FILENAME;
 
 class FileUploader
 {
     public function __construct(
-        private string $uploadDir
+        private string $uploadDir,
     ) {
     }
 
@@ -18,7 +20,7 @@ class FileUploader
 
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugify($originalFilename);
-        $newFilename = $safeFilename.'-'.uniqid().'.'.$file->getClientOriginalExtension();
+        $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
 
         $file->move($this->uploadDir, $newFilename);
 
