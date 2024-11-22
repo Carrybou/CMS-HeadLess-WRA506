@@ -42,22 +42,27 @@ To install the project, follow these steps:
     cd cms-headless-wra506
     ```
 
-2. Install dependencies using Composer:
+2.  ```sh
+    Run docker compose build --no-cache to build fresh images
+    Run docker compose up --pull always -d --wait to set up and start a fresh Symfony project
+     ```
+    Open https://localhost in your favorite web browser and accept the auto-generated TLS certificate
+   ```sh 
+    Run docker compose down --remove-orphans to stop the Docker containers.é
+   ```
+3. Install dependencies using Composer:
     ```sh
     composer install
     ```
 
-3. Set up the database:
+4. Set up the database:
     ```sh
     php bin/console doctrine:database:create
     php bin/console doctrine:migration:diff
     php bin/console doctrine:migration:migrate
     ```
 
-4. Start the Symfony server:
-    ```sh
-    symfony server:start
-    ```
+
 ### Commands
 
 The project includes two Symfony console commands for managing user roles:
@@ -70,7 +75,10 @@ The project includes two Symfony console commands for managing user roles:
 
   This command allows you to add or remove roles from a user. The roles control access to different parts of the application.
 
-
+- **Add a user**:
+    ```sh
+    php bin/console user:create --email test@gmail.com --password testpassword
+    ```
 ### Usage
 
 To use the API, you can send HTTP requests to the endpoints defined in the API documentation. Here are some examples:
