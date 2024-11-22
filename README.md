@@ -132,7 +132,8 @@ To use the API, you can send HTTP requests to the endpoints defined in the API d
 ## Static Analysis
 - To perform static analysis on the codebase using PHPStan, use the following command:
     ```sh
-    php vendor/bin/phpstan analyse -c phpstan.neon
+    php vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
+
     ```
     This command will analyze the codebase and provide information about potential issues and errors.
 ## Code Style Fixer
