@@ -6,7 +6,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.3.13",
+        "php": ">=8.2.8",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "runtime/frankenphp-symfony": "^0.2.0",
